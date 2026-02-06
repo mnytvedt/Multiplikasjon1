@@ -7,7 +7,7 @@
 <title>Matteflyt – Offline</title>
 <style>
 body{margin:0;background:#F7F8FC;font-family:Arial,Helvetica,sans-serif;}
-.screen{display:none;padding:20px;}
+.screen{display:none;padding:4px;}
 #practiceBar{display:flex;gap:10px;justify-content:center;align-items:center;margin:16px auto 0;max-width:800px;}
 .modeBtn{background:#fff;border:2px solid #6C6FA3;color:#2b2f55;padding:10px 16px;border-radius:10px;cursor:pointer;font-size:16px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
 .modeBtn.active{background:#6C6FA3;color:#fff;}
@@ -23,37 +23,45 @@ body{margin:0;background:#F7F8FC;font-family:Arial,Helvetica,sans-serif;}
 .subitem:hover:not(.locked){transform:scale(1.1);background:#f0f0ff;}
 .subitem.done{background:#C7E6D7;border-color:#2a8a64;}
 .subitem.locked{opacity:0.4;cursor:not-allowed;}
-#gameScreen{text-align:center;min-height:100svh;box-sizing:border-box;}
-#topBar{width:90%;max-width:800px;font-size:20px;display:flex;justify-content:space-between;margin:auto;}
-#progress{width:90%;max-width:800px;height:10px;background:#ddd;border-radius:5px;margin:12px auto;}
+#gameScreen{text-align:center;min-height:100svh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;padding:4px;}
+#topBar{width:95%;max-width:800px;font-size:14px;display:flex;justify-content:space-between;margin:0 auto 2px;}
+#progress{width:95%;max-width:800px;height:6px;background:#ddd;border-radius:5px;margin:2px auto;}
 #progInner{height:10px;background:#C7C0F5;width:0%;border-radius:5px;transition:width 0.3s;}
-#opBox{width:70%;max-width:600px;margin:auto;background:white;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:26px;font-size:60px;margin-top:16px;border:2px solid #C7C0F5;}
-#answer{font-size:44px;height:54px;margin-top:16px;color:#6C6FA3;font-weight:bold;}
-#keys{margin:12px auto 0;width:70%;max-width:360px;min-width:260px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-.key{background:white;border:2px solid #6C6FA3;padding:0;font-size:34px;border-radius:16px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:all 0.15s;user-select:none;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;} 
+#opBox{width:80%;max-width:500px;margin:0 auto 6px;background:white;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:14px;font-size:48px;border:2px solid #C7C0F5;}
+#answer{font-size:32px;height:38px;margin:2px 0;color:#6C6FA3;font-weight:bold;}
+#keys{margin:4px auto 0;width:80%;max-width:320px;min-width:240px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.key{background:white;border:2px solid #6C6FA3;padding:0;font-size:26px;border-radius:12px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:all 0.15s;user-select:none;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;} 
 .key:active{transform:scale(0.95);background:#f0f0ff;}
 .ok{background:#C7C0F5;color:white;font-weight:bold;}
 .ok:active{background:#a8a0d5;}
-.feedback{font-size:38px;height:44px;margin-top:8px;font-weight:bold;}
+.feedback{font-size:28px;height:32px;margin:2px 0;font-weight:bold;}
 .feedback.correct{color:#2a8a64;}
 .feedback.wrong{color:#d63447;}
 @media(max-width:768px){
 .levelBox{width:80%;}
-#topBar{font-size:18px;}
+#topBar{font-size:14px;}
 #practiceBar{flex-wrap:wrap;}
-#opBox{width:90%;font-size:44px;padding:18px;margin-top:12px;}
-#answer{font-size:36px;height:44px;margin-top:12px;}
-#keys{width:90%;max-width:340px;gap:10px;}
-.key{font-size:30px;border-radius:14px;}
-.feedback{font-size:32px;height:38px;}
+#opBox{width:90%;font-size:40px;padding:12px;margin-top:4px;}
+#answer{font-size:30px;height:36px;margin:4px 0;}
+#keys{width:90%;max-width:300px;gap:6px;}
+.key{font-size:24px;border-radius:10px;}
+.feedback{font-size:28px;height:32px;}
 }
 @media(max-height:700px){
-#topBar{font-size:18px;}
-#opBox{font-size:42px;padding:16px;margin-top:10px;}
-#answer{font-size:34px;height:42px;margin-top:10px;}
-#keys{gap:10px;}
-.key{font-size:28px;border-radius:14px;}
-.feedback{font-size:30px;height:36px;}
+#gameScreen{padding-top:2px;padding-bottom:2px;}
+#topBar{font-size:12px;margin:0 auto 2px;}
+#progress{margin:2px auto;}
+#opBox{width:85%;font-size:36px;padding:8px;margin-bottom:4px;}
+#answer{font-size:28px;height:32px;margin:2px 0;}
+#keys{width:85%;max-width:280px;gap:6px;margin:2px auto 0;}
+.key{font-size:20px;border-radius:10px;border-width:1px;}
+.feedback{font-size:24px;height:28px;margin:1px 0;}
+}
+@media(max-height:600px){
+#opBox{font-size:32px;padding:6px;}
+#answer{font-size:24px;height:28px;}
+.key{font-size:18px;}
+.feedback{font-size:20px;height:24px;}
 }
 </style>
 </head>

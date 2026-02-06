@@ -90,14 +90,20 @@ let progressData=JSON.parse(localStorage.getItem('progressData')||'{}');
 let level=1,sub=1,qIndex=0,correct=0,roundQs=[],answer='',startTime=0;
 let practiceMode=JSON.parse(localStorage.getItem('practiceMode')||'false');
 let practiceStars=parseInt(localStorage.getItem('practiceStars')||'0',10);
-const rounds={1:[2,5,3,99,4,6,9,99,8,7,99],2:[4,6,7,99,8,9,3,99,5,2,99],3:[9,8,7,99,6,5,4,99,3,2,99]};
+const rounds={1:[2,5,3,'R',4,6,9,'R',8,7,'R'],2:[2,5,3,'R',4,6,9,'R',8,7,'R'],3:[2,5,3,'R',4,6,9,'R',8,7,'R']};
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';let bar=document.getElementById('practiceBar');bar.style.display=id==='levelSelect'?'flex':'none';}
 function setPracticeMode(isPractice){practiceMode=isPractice;localStorage.setItem('practiceMode',JSON.stringify(practiceMode));updatePracticeUI();}
 function updatePracticeUI(){document.getElementById('practiceBtn').classList.toggle('active',practiceMode);document.getElementById('timeBtn').classList.toggle('active',!practiceMode);document.getElementById('practiceStars').innerHTML='Øvingsstjerner: '+practiceStars;}
 function isLevelComplete(l){if(!progressData[l])return false;let total=rounds[l].length;for(let i=0;i<total;i++){if(!progressData[l][i])return false;}return true;}
 function loadMenu(){unlocked[1]=true;unlocked[2]=isLevelComplete(1);unlocked[3]=isLevelComplete(2);localStorage.setItem('unlocked',JSON.stringify(unlocked));[1,2,3].forEach(l=>{let box=document.getElementById('lvl'+l);if(unlocked[l])box.classList.remove('locked');else box.classList.add('locked');let existing=box.querySelector('.diploma');if(existing)existing.remove();if(isLevelComplete(l)){let diploma=document.createElement('div');diploma.className='diploma';diploma.innerHTML='🏆';diploma.title='Nivå fullført!';box.appendChild(diploma);}let sm=document.getElementById('sub'+l);sm.innerHTML='';rounds[l].forEach((v,i)=>{let d=document.createElement('div');d.className='subitem';d.innerHTML=v==99?'R':' '+(i+1)+' ';let isDone=progressData[l]&&progressData[l][i];if(isDone){d.classList.add('done');d.innerHTML='⭐'+(v==99?'R':' '+(i+1)+' ');}let canPlay=unlocked[l]&&(i===0||(progressData[l]&&progressData[l][i-1]));if(!canPlay){d.classList.add('locked');d.onclick=null;} else {d.onclick=()=>startRound(l,i);}sm.appendChild(d);});});}
-function startRound(l,i){level=l;sub=i;qIndex=0;correct=0;answer='';roundQs=[];let base=rounds[l][i];if(base==99){let mix=rounds[l].filter(x=>x!=99);base=mix[Math.floor(Math.random()*mix.length)];}
-for(let k=0;k<10;k++){let b=Math.floor(Math.random()*10)+1;roundQs.push([base,b,base*b]);}
+function startRound(l,i){level=l;sub=i;qIndex=0;correct=0;answer='';roundQs=[];let base=rounds[l][i];
+let bRange=[];
+if(l===1){for(let x=0;x<=5;x++)bRange.push(x);}
+else if(l===2){for(let x=6;x<=10;x++)bRange.push(x);}
+else if(l===3){for(let x=2;x<=9;x++)bRange.push(x);}
+if(base==='R'){let reviewBases=[];if(i===3)reviewBases=[rounds[l][0],rounds[l][1],rounds[l][2]];else if(i===7)reviewBases=[rounds[l][4],rounds[l][5],rounds[l][6]];else if(i===10)reviewBases=[rounds[l][8],rounds[l][9]];
+for(let k=0;k<10;k++){let rb=reviewBases[Math.floor(Math.random()*reviewBases.length)];let b=bRange[Math.floor(Math.random()*bRange.length)];while(k>0&&roundQs[k-1][0]===rb&&roundQs[k-1][1]===b){rb=reviewBases[Math.floor(Math.random()*reviewBases.length)];b=bRange[Math.floor(Math.random()*bRange.length)];}roundQs.push([rb,b,rb*b]);}}else{
+for(let k=0;k<10;k++){let b=bRange[Math.floor(Math.random()*bRange.length)];while(k>0&&roundQs[k-1][0]===base&&roundQs[k-1][1]===b){b=bRange[Math.floor(Math.random()*bRange.length)];}roundQs.push([base,b,base*b]);}}
 show('gameScreen');render();startTime=Date.now();}
 function render(){document.getElementById('topLeft').innerHTML='Nivå '+level+' – Runde '+(sub+1)+(practiceMode?' - ØV':'');document.getElementById('topRight').innerHTML=(qIndex+1)+' / 10';document.getElementById('progInner').style.width=(qIndex*10)+'%';document.getElementById('opBox').innerHTML=roundQs[qIndex][0]+' × '+roundQs[qIndex][1];document.getElementById('answer').innerHTML=answer;}
 function keyPress(v){if(v==='del'){answer=answer.slice(0,-1);render();return;}if(v==='ok'){check();return;}if(answer.length<3)answer+=v;render();}

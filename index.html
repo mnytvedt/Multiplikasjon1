@@ -8,6 +8,10 @@
 <style>
 body{margin:0;background:#F7F8FC;font-family:Arial,Helvetica,sans-serif;}
 .screen{display:none;padding:20px;}
+#practiceBar{display:flex;gap:10px;justify-content:center;align-items:center;margin:16px auto 0;max-width:800px;}
+.modeBtn{background:#fff;border:2px solid #6C6FA3;color:#2b2f55;padding:10px 16px;border-radius:10px;cursor:pointer;font-size:16px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+.modeBtn.active{background:#6C6FA3;color:#fff;}
+#practiceStars{font-size:16px;color:#2b2f55;font-weight:bold;}
 #levelSelect{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;max-width:1200px;margin:0 auto;}
 .levelBox{width:28%;min-width:250px;background:white;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:20px;text-align:center;font-size:26px;cursor:pointer;border:2px solid #C7C0F5;transition:transform 0.2s;position:relative;}
 .levelBox:hover:not(.locked){transform:scale(1.05);}
@@ -19,28 +23,46 @@ body{margin:0;background:#F7F8FC;font-family:Arial,Helvetica,sans-serif;}
 .subitem:hover:not(.locked){transform:scale(1.1);background:#f0f0ff;}
 .subitem.done{background:#C7E6D7;border-color:#2a8a64;}
 .subitem.locked{opacity:0.4;cursor:not-allowed;}
-#gameScreen{text-align:center;}
+#gameScreen{text-align:center;min-height:100svh;box-sizing:border-box;}
 #topBar{width:90%;max-width:800px;font-size:20px;display:flex;justify-content:space-between;margin:auto;}
 #progress{width:90%;max-width:800px;height:10px;background:#ddd;border-radius:5px;margin:12px auto;}
 #progInner{height:10px;background:#C7C0F5;width:0%;border-radius:5px;transition:width 0.3s;}
-#opBox{width:70%;max-width:600px;margin:auto;background:white;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:30px;font-size:64px;margin-top:20px;border:2px solid #C7C0F5;}
-#answer{font-size:48px;height:60px;margin-top:20px;color:#6C6FA3;font-weight:bold;}
-#keys{margin:auto;margin-top:20px;width:60%;max-width:400px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-.key{background:white;border:2px solid #6C6FA3;padding:20px;font-size:36px;border-radius:16px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:all 0.15s;user-select:none;} 
+#opBox{width:70%;max-width:600px;margin:auto;background:white;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:26px;font-size:60px;margin-top:16px;border:2px solid #C7C0F5;}
+#answer{font-size:44px;height:54px;margin-top:16px;color:#6C6FA3;font-weight:bold;}
+#keys{margin:12px auto 0;width:70%;max-width:360px;min-width:260px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.key{background:white;border:2px solid #6C6FA3;padding:0;font-size:34px;border-radius:16px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:all 0.15s;user-select:none;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;} 
 .key:active{transform:scale(0.95);background:#f0f0ff;}
 .ok{background:#C7C0F5;color:white;font-weight:bold;}
 .ok:active{background:#a8a0d5;}
-.feedback{font-size:42px;height:50px;margin-top:10px;font-weight:bold;}
+.feedback{font-size:38px;height:44px;margin-top:8px;font-weight:bold;}
 .feedback.correct{color:#2a8a64;}
 .feedback.wrong{color:#d63447;}
 @media(max-width:768px){
 .levelBox{width:80%;}
-#keys{width:90%;}
-#opBox{width:90%;font-size:48px;}
+#topBar{font-size:18px;}
+#practiceBar{flex-wrap:wrap;}
+#opBox{width:90%;font-size:44px;padding:18px;margin-top:12px;}
+#answer{font-size:36px;height:44px;margin-top:12px;}
+#keys{width:90%;max-width:340px;gap:10px;}
+.key{font-size:30px;border-radius:14px;}
+.feedback{font-size:32px;height:38px;}
+}
+@media(max-height:700px){
+#topBar{font-size:18px;}
+#opBox{font-size:42px;padding:16px;margin-top:10px;}
+#answer{font-size:34px;height:42px;margin-top:10px;}
+#keys{gap:10px;}
+.key{font-size:28px;border-radius:14px;}
+.feedback{font-size:30px;height:36px;}
 }
 </style>
 </head>
 <body>
+<div id='practiceBar'>
+ <button id='timeBtn' class='modeBtn' onclick='setPracticeMode(false)'>Spill</button>
+ <button id='practiceBtn' class='modeBtn' onclick='setPracticeMode(true)'>Øv</button>
+ <div id='practiceStars'>Øvingsstjerner: 0</div>
+</div>
 <div id='levelSelect' class='screen'>
  <div class='levelBox' id='lvl1'>Nivå 1<div class='submenu' id='sub1'></div></div>
  <div class='levelBox locked' id='lvl2'>Nivå 2<div class='submenu' id='sub2'></div></div>
@@ -58,22 +80,26 @@ body{margin:0;background:#F7F8FC;font-family:Arial,Helvetica,sans-serif;}
 let unlocked=JSON.parse(localStorage.getItem('unlocked')||'{"1":true,"2":false,"3":false}');
 let progressData=JSON.parse(localStorage.getItem('progressData')||'{}');
 let level=1,sub=1,qIndex=0,correct=0,roundQs=[],answer='',startTime=0;
+let practiceMode=JSON.parse(localStorage.getItem('practiceMode')||'false');
+let practiceStars=parseInt(localStorage.getItem('practiceStars')||'0',10);
 const rounds={1:[2,5,3,99,4,6,9,99,8,7,99],2:[4,6,7,99,8,9,3,99,5,2,99],3:[9,8,7,99,6,5,4,99,3,2,99]};
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.style.display='none');document.getElementById(id).style.display='block';let bar=document.getElementById('practiceBar');bar.style.display=id==='levelSelect'?'flex':'none';}
+function setPracticeMode(isPractice){practiceMode=isPractice;localStorage.setItem('practiceMode',JSON.stringify(practiceMode));updatePracticeUI();}
+function updatePracticeUI(){document.getElementById('practiceBtn').classList.toggle('active',practiceMode);document.getElementById('timeBtn').classList.toggle('active',!practiceMode);document.getElementById('practiceStars').innerHTML='Øvingsstjerner: '+practiceStars;}
 function isLevelComplete(l){if(!progressData[l])return false;let total=rounds[l].length;for(let i=0;i<total;i++){if(!progressData[l][i])return false;}return true;}
 function loadMenu(){unlocked[1]=true;unlocked[2]=isLevelComplete(1);unlocked[3]=isLevelComplete(2);localStorage.setItem('unlocked',JSON.stringify(unlocked));[1,2,3].forEach(l=>{let box=document.getElementById('lvl'+l);if(unlocked[l])box.classList.remove('locked');else box.classList.add('locked');let existing=box.querySelector('.diploma');if(existing)existing.remove();if(isLevelComplete(l)){let diploma=document.createElement('div');diploma.className='diploma';diploma.innerHTML='🏆';diploma.title='Nivå fullført!';box.appendChild(diploma);}let sm=document.getElementById('sub'+l);sm.innerHTML='';rounds[l].forEach((v,i)=>{let d=document.createElement('div');d.className='subitem';d.innerHTML=v==99?'R':' '+(i+1)+' ';let isDone=progressData[l]&&progressData[l][i];if(isDone){d.classList.add('done');d.innerHTML='⭐'+(v==99?'R':' '+(i+1)+' ');}let canPlay=unlocked[l]&&(i===0||(progressData[l]&&progressData[l][i-1]));if(!canPlay){d.classList.add('locked');d.onclick=null;} else {d.onclick=()=>startRound(l,i);}sm.appendChild(d);});});}
 function startRound(l,i){level=l;sub=i;qIndex=0;correct=0;answer='';roundQs=[];let base=rounds[l][i];if(base==99){let mix=rounds[l].filter(x=>x!=99);base=mix[Math.floor(Math.random()*mix.length)];}
 for(let k=0;k<10;k++){let b=Math.floor(Math.random()*10)+1;roundQs.push([base,b,base*b]);}
-show('gameScreen');render();}
-function render(){document.getElementById('topLeft').innerHTML='Nivå '+level+' – Runde '+(sub+1);document.getElementById('topRight').innerHTML=(qIndex+1)+' / 10';document.getElementById('progInner').style.width=(qIndex*10)+'%';document.getElementById('opBox').innerHTML=roundQs[qIndex][0]+' × '+roundQs[qIndex][1];document.getElementById('answer').innerHTML=answer;}
+show('gameScreen');render();startTime=Date.now();}
+function render(){document.getElementById('topLeft').innerHTML='Nivå '+level+' – Runde '+(sub+1)+(practiceMode?' - ØV':'');document.getElementById('topRight').innerHTML=(qIndex+1)+' / 10';document.getElementById('progInner').style.width=(qIndex*10)+'%';document.getElementById('opBox').innerHTML=roundQs[qIndex][0]+' × '+roundQs[qIndex][1];document.getElementById('answer').innerHTML=answer;}
 function keyPress(v){if(v==='del'){answer=answer.slice(0,-1);render();return;}if(v==='ok'){check();return;}if(answer.length<3)answer+=v;render();}
-function check(){if(!answer)return;let now=Date.now();let diff=(now-startTime)/1000;if(startTime===0)diff=0;let a=parseInt(answer);let correctAns=roundQs[qIndex][2];let fb=document.getElementById('fb');if(diff>5){fb.innerHTML='⏱ For treg!';fb.className='feedback wrong';} else if(a===correctAns){fb.innerHTML='✔ Riktig!';fb.className='feedback correct';correct++;} else {fb.innerHTML='✗ Feil ('+correctAns+')';fb.className='feedback wrong';}setTimeout(()=>{fb.innerHTML='';fb.className='feedback';next();},1000);} 
-function next(){answer='';qIndex++;if(qIndex>=10){finish();return;}startTime=Date.now();render();}
-function finish(){let msg=correct+' av 10 riktige!';if(correct===10){msg='🎉 Perfekt! Alle riktige!';if(!progressData[level])progressData[level]={};progressData[level][sub]=true;localStorage.setItem('progressData',JSON.stringify(progressData));if(isLevelComplete(level)&&level<3){msg+='\n\n🔓 Nivå '+(level+1)+' er nå låst opp!';}localStorage.setItem('unlocked',JSON.stringify(unlocked));} else if(correct>=7){msg='👍 Bra! '+correct+' av 10 riktige!';} else {msg='⚠️ Du må få 10/10 riktige for å fullføre!';}alert(msg);show('levelSelect');loadMenu();if(isLevelComplete(3)&&confirm('Alle 3 nivåene er fullført! Vil du nullstille og starte på nytt?')){resetProgress(true);}}
+function check(){if(!answer)return;let now=Date.now();let diff=(now-startTime)/1000;let a=parseInt(answer);let correctAns=roundQs[qIndex][2];let fb=document.getElementById('fb');if(practiceMode){if(a===correctAns){fb.innerHTML='✔';fb.className='feedback correct';correct++;} else {fb.innerHTML='✗';fb.className='feedback wrong';}setTimeout(()=>{fb.innerHTML='';fb.className='feedback';next();},1000);return;}
+if(a===correctAns){if(diff>5){fb.innerHTML='⏱';fb.className='feedback wrong';setTimeout(()=>{fb.innerHTML='';fb.className='feedback';answer='';startTime=Date.now();render();},1000);return;}fb.innerHTML='✔';fb.className='feedback correct';correct++;} else {fb.innerHTML='✗';fb.className='feedback wrong';}setTimeout(()=>{fb.innerHTML='';fb.className='feedback';next();},1000);} 
+function next(){answer='';qIndex++;if(qIndex>=10){finish();return;}render();startTime=Date.now();}
+function finish(){if(practiceMode){practiceStars+=1;localStorage.setItem('practiceStars',practiceStars.toString());updatePracticeUI();alert('Øvingsrunde fullført! '+correct+' av 10 riktige. ⭐');show('levelSelect');loadMenu();return;}let msg=correct+' av 10 riktige!';if(correct===10){msg='🎉 Perfekt! Alle riktige!';if(!progressData[level])progressData[level]={};progressData[level][sub]=true;localStorage.setItem('progressData',JSON.stringify(progressData));if(isLevelComplete(level)&&level<3){msg+='\n\n🔓 Nivå '+(level+1)+' er nå låst opp!';}localStorage.setItem('unlocked',JSON.stringify(unlocked));} else if(correct>=7){msg='👍 Bra! '+correct+' av 10 riktige!';} else {msg='⚠️ Du må få 10/10 riktige for å fullføre!';}alert(msg);show('levelSelect');loadMenu();if(isLevelComplete(3)&&confirm('Alle 3 nivåene er fullført! Vil du nullstille og starte på nytt?')){resetProgress(true);}}
 function resetProgress(skipConfirm){if(skipConfirm||confirm('Er du sikker på at du vil nullstille all fremgang?')){localStorage.clear();unlocked={1:true,2:false,3:false};progressData={};loadMenu();alert('Fremgang nullstilt!');}}
 function buildKeys(){let k=document.getElementById('keys');['1','2','3','4','5','6','7','8','9','del','0','ok'].forEach(x=>{let b=document.createElement('div');b.className='key';if(x==='ok')b.classList.add('ok');b.innerHTML=x==='del'?'←':(x==='ok'?'SVAR':x);b.onclick=()=>keyPress(x);k.appendChild(b);});}
-buildKeys();loadMenu();show('levelSelect');
-document.getElementById('gameScreen').addEventListener('transitionend',()=>{startTime=Date.now();});
+buildKeys();updatePracticeUI();loadMenu();show('levelSelect');
 </script>
 </body>
 </html>

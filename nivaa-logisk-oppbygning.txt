@@ -1,0 +1,121 @@
+MATTEFLYT – LOGISK OPPBYGNING AV NIVÅER OG SPESIFIKKE OPPGAVER
+
+Oversikt:
+- Spillet har 3 nivåer.
+- Hvert nivå har 11 runder.
+- Hver runde består av 10 oppgaver.
+- For å fullføre en runde i Spill-modus må eleven ha 10/10 riktige.
+- En ny runde låses opp når forrige runde er fullført (stjerne).
+- Nivå 2 låses opp når hele nivå 1 er fullført.
+- Nivå 3 låses opp når hele nivå 2 er fullført.
+
+MODUSER
+
+1) Spill-modus:
+- Oppgaven må besvares riktig innen 5 sekunder.
+- Feil svar gir kryss og man går videre til neste oppgave.
+- Riktig svar etter mer enn 5 sekunder teller som feil for den oppgaven (time-out-markering).
+- Fullført runde (10/10) gir stjerne på runden.
+
+2) Øv-modus:
+- Ingen 5-sekunderskrav.
+- Runden gir 1 øvingsstjerne uansett score.
+- Øvingsstjerner påvirker ikke opplåsing av nivåer/runder.
+
+==================================================
+NIVÅ 1 (faktorområde for oppgave 2. tall: 0–5)
+==================================================
+
+Runde 1: 2-gangen
+- Oppgavetype: 2 × [0–5]
+- Antall oppgaver: 10 tilfeldig valgte
+
+Runde 2: 5-gangen
+- Oppgavetype: 5 × [0–5]
+- Antall oppgaver: 10 tilfeldig valgte
+
+Runde 3: 3-gangen
+- Oppgavetype: 3 × [0–5]
+- Antall oppgaver: 10 tilfeldig valgte
+
+Runde 4: Repetisjon R
+- Oppgavetype: tilfeldig miks av 2-, 5- og 3-gangen med [2–5] (0 og 1 er fjernet i repetisjon)
+- Antall oppgaver: 10
+
+Runde 5: 4-gangen
+- Oppgavetype: 4 × [0–5]
+- Antall oppgaver: 10 tilfeldig valgte
+
+Runde 6: 6-gangen
+- Oppgavetype: 6 × [0–5]
+- Antall oppgaver: 10 tilfeldig valgte
+
+Runde 7: 9-gangen
+- Oppgavetype: 9 × [0–5]
+- Antall oppgaver: 10 tilfeldig valgte
+
+Runde 8: Repetisjon R
+- Oppgavetype: tilfeldig miks av 4-, 6- og 9-gangen med [2–5] (0 og 1 er fjernet i repetisjon)
+- Antall oppgaver: 10
+
+Runde 9: 8-gangen
+- Oppgavetype: 8 × [0–5]
+- Antall oppgaver: 10 tilfeldig valgte
+
+Runde 10: 7-gangen
+- Oppgavetype: 7 × [0–5]
+- Antall oppgaver: 10 tilfeldig valgte
+
+Runde 11: Repetisjon R
+- Oppgavetype: tilfeldig miks av 8- og 7-gangen med [2–5] (0 og 1 er fjernet i repetisjon)
+- Antall oppgaver: 10
+
+==================================================
+NIVÅ 2 (faktorområde for oppgave 2. tall: 6–10)
+==================================================
+
+Rundestruktur er identisk med nivå 1, men alle oppgaver bruker [6–10] som andre faktor.
+
+Runde 1: 2 × [6–10]
+Runde 2: 5 × [6–10]
+Runde 3: 3 × [6–10]
+Runde 4: Repetisjon av runde 1–3
+Runde 5: 4 × [6–10]
+Runde 6: 6 × [6–10]
+Runde 7: 9 × [6–10]
+Runde 8: Repetisjon av runde 5–7
+Runde 9: 8 × [6–10]
+Runde 10: 7 × [6–10]
+Runde 11: Repetisjon av runde 9–10
+
+==================================================
+NIVÅ 3 (faktorområde for oppgave 2. tall: 2–9)
+==================================================
+
+Rundestruktur er identisk med nivå 1, men alle oppgaver bruker [2–9] som andre faktor.
+
+Runde 1: 2 × [2–9]
+Runde 2: 5 × [2–9]
+Runde 3: 3 × [2–9]
+Runde 4: Repetisjon av runde 1–3
+Runde 5: 4 × [2–9]
+Runde 6: 6 × [2–9]
+Runde 7: 9 × [2–9]
+Runde 8: Repetisjon av runde 5–7
+Runde 9: 8 × [2–9]
+Runde 10: 7 × [2–9]
+Runde 11: Repetisjon av runde 9–10
+
+SPESIFIKKE GJENNOMFØRINGSKRAV I SPILL-MODUS
+
+For hver runde:
+1. Løs 10 multiplikasjonsoppgaver.
+2. Svar riktig på alle 10 (10/10).
+3. Hvert riktig svar må gis innen 5 sekunder.
+4. Ved 10/10 markeres runden som fullført (⭐).
+5. Når alle 11 runder i et nivå er fullført, er nivået fullført (🏆).
+
+SLUTTLOGIKK
+
+- Når nivå 3 er fullført, regnes hele spillet som fullført.
+- Deretter får brukeren valg om å nullstille progresjon og starte på nytt.

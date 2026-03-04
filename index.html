@@ -102,7 +102,8 @@ if(l===1){for(let x=0;x<=5;x++)bRange.push(x);}
 else if(l===2){for(let x=6;x<=10;x++)bRange.push(x);}
 else if(l===3){for(let x=2;x<=9;x++)bRange.push(x);}
 if(base==='R'){let reviewBases=[];if(i===3)reviewBases=[rounds[l][0],rounds[l][1],rounds[l][2]];else if(i===7)reviewBases=[rounds[l][4],rounds[l][5],rounds[l][6]];else if(i===10)reviewBases=[rounds[l][8],rounds[l][9]];
-for(let k=0;k<10;k++){let rb=reviewBases[Math.floor(Math.random()*reviewBases.length)];let b=bRange[Math.floor(Math.random()*bRange.length)];while(k>0&&roundQs[k-1][0]===rb&&roundQs[k-1][1]===b){rb=reviewBases[Math.floor(Math.random()*reviewBases.length)];b=bRange[Math.floor(Math.random()*bRange.length)];}roundQs.push([rb,b,rb*b]);}}else{
+let reviewBRange=bRange.filter(x=>x!==0&&x!==1);if(reviewBRange.length===0)reviewBRange=bRange;
+for(let k=0;k<10;k++){let rb=reviewBases[Math.floor(Math.random()*reviewBases.length)];let b=reviewBRange[Math.floor(Math.random()*reviewBRange.length)];while(k>0&&roundQs[k-1][0]===rb&&roundQs[k-1][1]===b){rb=reviewBases[Math.floor(Math.random()*reviewBases.length)];b=reviewBRange[Math.floor(Math.random()*reviewBRange.length)];}roundQs.push([rb,b,rb*b]);}}else{
 for(let k=0;k<10;k++){let b=bRange[Math.floor(Math.random()*bRange.length)];while(k>0&&roundQs[k-1][0]===base&&roundQs[k-1][1]===b){b=bRange[Math.floor(Math.random()*bRange.length)];}roundQs.push([base,b,base*b]);}}
 show('gameScreen');render();startTime=Date.now();}
 function render(){document.getElementById('topLeft').innerHTML='Nivå '+level+' – Runde '+(sub+1)+(practiceMode?' - ØV':'');document.getElementById('topRight').innerHTML=(qIndex+1)+' / 10';document.getElementById('progInner').style.width=(qIndex*10)+'%';document.getElementById('opBox').innerHTML=roundQs[qIndex][0]+' × '+roundQs[qIndex][1];document.getElementById('answer').innerHTML=answer;}
